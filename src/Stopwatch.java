@@ -19,6 +19,24 @@ public class Stopwatch implements ActionListener {
     String minutesString = String.format("%02d", minutes);
     String hoursString = String.format("%02d", hours);
 
+    Timer timer = new Timer(1000, new ActionListener() {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            elapsedTime+=1000;
+            hours = (elapsedTime/3600000);
+            minutes = (elapsedTime/60000) % 60;
+            seconds = (elapsedTime/1000) %60;
+            String hoursString = String.format("%02d", hours);
+            String minutesString = String.format("%02d", minutes);
+            String secondsString = String.format("%02d", seconds);
+
+            timeLabel.setText(hoursString+":"+minutesString+":"+secondsString);
+
+        }
+    });
+
     Stopwatch() {
 
         timeLabel.setText(hoursString+":"+minutesString+":"+secondsString);
@@ -51,17 +69,47 @@ public class Stopwatch implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent event) {
 
+        if(event.getSource()==startButton) {
+            start();
+            if(started==false) {
+                started = true;
+                startButton.setText("STOP");
+                start();
+            } else {
+                started = false;
+                startButton.setText("START");
+                stop();
+            }
+        }
+
+        if(event.getSource()==resetButton) {
+            started = false;
+            startButton.setText("START");
+            reset();
+        }
+
     }
 
     void start() {
-
+        timer.start();
     }
 
     void stop() {
-
+        timer.stop();
     }
 
     void reset() {
+        timer.stop();
+        elapsedTime = 0;
+        seconds = 0;
+        minutes = 0;
+        hours = 0;
 
+        String secondsString = String.format("%02d", seconds);
+        String minutesString = String.format("%02d", minutes);
+        String hoursString = String.format("%02d", hours);
+
+
+        timeLabel.setText(hoursString+":"+minutesString+":"+secondsString);
     }
 }
